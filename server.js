@@ -1,4 +1,5 @@
-require('dotenv').config();  // ← ADD THIS at the top
+require('dotenv').config();
+console.log('API KEY:', process.env.ANTHROPIC_API_KEY ? 'LOADED ✅' : 'MISSING ❌');  // ← add this
 const express = require('express');
 const cors = require('cors');
 // ... rest of your code
