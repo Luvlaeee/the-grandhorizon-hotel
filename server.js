@@ -119,25 +119,23 @@ For reservations, direct guests to fill the booking form on the website or call 
 
   try {
 const fetch = (await import('node-fetch')).default;
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'anthropic-version': '2023-06-01',
-        'x-api-key': process.env.ANTHROPIC_API_KEY
-      },
-      body: JSON.stringify({
-        model: 'claude-haiku-4-5-20251001',
-        max_tokens: 500,
-        system: SYSTEM_PROMPT,
-        messages
-      })
-    });
-
-    const data = await response.json();
-    console.log('Anthropic raw response:', JSON.stringify(data));
-
-    const reply = data.content?.[0]?.text || 'Please call us at +63 (2) 8888-7000.';
+    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+  method: 'POST',
+  headers: { 
+    'Content-Type': 'application/json', 
+    'Authorization': `Bearer ${process.env.GROQ_API_KEY}` 
+  },
+  body: JSON.stringify({ 
+    model: 'llama3-8b-8192', 
+    max_tokens: 500, 
+    messages: [
+      { role: 'system', content: SYSTEM_PROMPT },
+      ...messages
+    ] 
+  })
+});
+const data = await response.json();
+const reply = data.choices?.[0]?.message?.content || 'Please call us at +63 (2) 8888-7000.';
     res.json({ success: true, reply });
   } catch (e) {
     console.error('CHAT ERROR:', e.message, e);
