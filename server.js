@@ -100,15 +100,6 @@ app.get('/api/admin/reservations', (req, res) => {
 });
 
 // ─── API: Submit inquiry ───
-app.post('/api/inquiries', (req, res) => {
-  const { name, email, subject, message } = req.body;
-  if (!name || !email || !message) return res.status(400).json({ success: false, message: 'Name, email, and message are required.' });
-
-  const inquiry = { id: Date.now(), name, email, subject, message, createdAt: new Date().toISOString() };
-  inquiries.push(inquiry);
-  res.json({ success: true, message: 'Thank you for your inquiry! Our concierge team will respond within 2 hours.', inquiry });
-});
-
 // ─── API: AI Chat Proxy ───
 app.post('/api/chat', async (req, res) => {
   const { messages } = req.body;
@@ -129,23 +120,25 @@ For reservations, direct guests to fill the booking form on the website or call 
   try {
     const fetch = (await import('node-fetch')).default;
     const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-  method: 'POST',
-  headers: { 
-    'Content-Type': 'application/json', 
-    'Authorization': `Bearer ${process.env.GROQ_API_KEY}` 
-  },
-  body: JSON.stringify({ 
-    model: 'llama3-8b-8192', 
-    max_tokens: 500, 
-    messages: [
-      { role: 'system', content: SYSTEM_PROMPT },
-      ...messages
-    ] 
-  })
-});
-const data = await response.json();
-console.log('Groq raw response:', JSON.stringify(data, null, 2));
-const reply = data.choices?.[0]?.message?.content || 'Please call us at +63 (2) 8888-7000.';
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json', 
+        'Authorization': `Bearer ${process.env.GROQ_API_KEY}` 
+      },
+      body: JSON.stringify({ 
+        model: 'llama3-8b-8192', 
+        max_tokens: 500, 
+        messages: [
+          { role: 'system', content: SYSTEM_PROMPT },
+          ...messages
+        ] 
+      })
+    });
+    
+    const data = await response.json();
+    console.log('Groq raw response:', JSON.stringify(data, null, 2)); // ← ADD THIS LINE HERE
+    
+    const reply = data.choices?.[0]?.message?.content || 'Please call us at +63 (2) 8888-7000.';
     res.json({ success: true, reply });
   } catch (e) {
     console.error('CHAT ERROR:', e.message, e);
