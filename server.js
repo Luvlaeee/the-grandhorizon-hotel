@@ -133,7 +133,8 @@ For reservations, direct guests to fill the booking form on the website or call 
     const reply = data.content?.[0]?.text || 'Please call us at +63 (2) 8888-7000 for immediate assistance.';
     res.json({ success: true, reply });
   } catch (e) {
-    res.json({ success: true, reply: 'Apologies for the inconvenience. Please contact us directly at +63 (2) 8888-7000 or reservations@thegrandhorizon.ph — our team is available 24/7.' });
+    console.error('CHAT ERROR:', e.message, e);
+    res.json({ success: true, reply: `DEBUG: ${e.message}` });
   }
 });
 
