@@ -127,7 +127,7 @@ For reservations, direct guests to fill the booking form on the website or call 
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'anthropic-version': '2023-06-01', 'x-api-key': process.env.ANTHROPIC_API_KEY || '' },
-      body: JSON.stringify({ model: 'claude-sonnet-4-5', max_tokens: 500, system: SYSTEM_PROMPT, messages })
+      body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: 500, system: SYSTEM_PROMPT, messages })
     });
     const data = await response.json();
     const reply = data.content?.[0]?.text || 'Please call us at +63 (2) 8888-7000 for immediate assistance.';
