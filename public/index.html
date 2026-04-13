@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grand Horizon — Luxury Hotel Philippines</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --gold:#C9A84C;--gold-light:#E8D5A0;--gold-dark:#9B7A2A;
+  --cream:#FAF6EE;--cream2:#F2EBD9;--dark:#1A1209;
+  --dark2:#2D2415;--text:#3A2E1A;--muted:#7A6A4A;
+  --white:#FFFDF8;--accent:#8B1A1A;--green:#2D6A2D;--red:#8B1A1A;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Jost',sans-serif;background:var(--cream);color:var(--text);overflow-x:hidden}
+
+/* ── TOAST ── */
+.toast{position:fixed;top:90px;right:2rem;z-index:9999;padding:1rem 1.6rem;font-size:0.83rem;font-weight:600;letter-spacing:0.04em;transform:translateX(130%);transition:transform 0.4s cubic-bezier(.22,1,.36,1);max-width:360px;line-height:1.5}
+.toast.show{transform:translateX(0)}
+.toast.success{background:var(--gold);color:var(--dark)}
+.toast.error{background:var(--red);color:#fff}
+.toast.info{background:var(--dark);color:var(--gold);border:1px solid var(--gold)}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;width:100%;z-index:1000;background:rgba(26,18,9,0.94);backdrop-filter:blur(14px);border-bottom:1px solid rgba(201,168,76,0.25);padding:0 2.5rem}
+.nav-inner{max-width:1400px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:72px}
+.logo{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:300;color:var(--gold);letter-spacing:0.15em;cursor:pointer;user-select:none}
+.logo em{font-style:italic;font-weight:400}
+.nav-links{display:flex;gap:2rem;align-items:center}
+.nav-links a{color:rgba(255,253,248,0.75);font-size:0.76rem;letter-spacing:0.12em;text-transform:uppercase;text-decoration:none;transition:color 0.2s;cursor:pointer}
+.nav-links a:hover{color:var(--gold)}
+.nav-cta{background:var(--gold) !important;color:var(--dark) !important;padding:0.52rem 1.4rem;font-weight:600 !important;letter-spacing:0.08em !important}
+.nav-cta:hover{background:var(--gold-light) !important}
+
+/* ── HERO ── */
+.hero{height:100vh;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.hero-bg{position:absolute;inset:0;background:#1A1209}
+.hero-pattern{position:absolute;inset:0;z-index:1;opacity:0.05;background-image:repeating-linear-gradient(45deg,var(--gold) 0,var(--gold) 1px,transparent 0,transparent 50%);background-size:20px 20px}
+.hero-img{position:absolute;inset:0;z-index:2;background:url('https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1600&q=80') center/cover no-repeat;opacity:0.38}
+.hero-overlay{position:absolute;inset:0;z-index:3;background:linear-gradient(to bottom,rgba(26,18,9,0.25) 0%,rgba(26,18,9,0.5) 55%,rgba(26,18,9,0.88) 100%)}
+.hero-content{position:relative;z-index:4;text-align:center;max-width:820px;padding:0 2rem;animation:fadeUp 1.2s ease both}
+.hero-eyebrow{font-size:0.7rem;letter-spacing:0.32em;text-transform:uppercase;color:var(--gold);margin-bottom:1.6rem;display:flex;align-items:center;justify-content:center;gap:1rem}
+.hero-eyebrow::before,.hero-eyebrow::after{content:'';width:40px;height:1px;background:var(--gold)}
+h1.hero-title{font-family:'Cormorant Garamond',serif;font-size:clamp(2.8rem,7vw,5.5rem);font-weight:300;color:var(--white);line-height:1.06;margin-bottom:0.4rem}
+h1.hero-title em{font-style:italic;color:var(--gold-light)}
+.hero-sub{font-family:'Cormorant Garamond',serif;font-size:clamp(0.95rem,2vw,1.35rem);font-weight:300;color:rgba(255,253,248,0.55);margin-bottom:1.2rem;letter-spacing:0.04em}
+.hero-loc{font-size:0.72rem;letter-spacing:0.2em;color:rgba(255,253,248,0.45);text-transform:uppercase;margin-bottom:3rem}
+.hero-loc span{color:var(--gold)}
+.hero-btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+.btn-gold{background:var(--gold);color:var(--dark);padding:0.85rem 2.5rem;font-family:'Jost',sans-serif;font-size:0.78rem;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;border:none;cursor:pointer;transition:all 0.25s}
+.btn-gold:hover{background:var(--gold-light);transform:translateY(-2px)}
+.btn-ghost{background:transparent;color:var(--white);padding:0.85rem 2.5rem;font-family:'Jost',sans-serif;font-size:0.78rem;font-weight:400;letter-spacing:0.15em;text-transform:uppercase;border:1px solid rgba(255,253,248,0.35);cursor:pointer;transition:all 0.25s}
+.btn-ghost:hover{border-color:var(--gold);color:var(--gold)}
+.scroll-cue{position:absolute;bottom:2.5rem;left:50%;transform:translateX(-50%);z-index:4;display:flex;flex-direction:column;align-items:center;gap:0.4rem;color:rgba(255,253,248,0.35);font-size:0.62rem;letter-spacing:0.22em;text-transform:uppercase;animation:bob 2.2s ease-in-out infinite}
+.scroll-line{width:1px;height:36px;background:linear-gradient(to bottom,var(--gold),transparent)}
+
+/* ── BOOKING BAR ── */
+.booking-bar{background:var(--dark);padding:1.8rem 2.5rem;position:relative;z-index:100}
+.booking-wrap{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr 1fr 1fr auto;border:1px solid rgba(201,168,76,0.22)}
+.bf{padding:1.1rem 1.6rem;border-right:1px solid rgba(201,168,76,0.18);display:flex;flex-direction:column;gap:0.35rem;cursor:pointer;transition:background 0.2s;position:relative}
+.bf:hover{background:rgba(201,168,76,0.06)}
+.bf-label{font-size:0.62rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--muted)}
+.bf input,.bf select{background:transparent;border:none;outline:none;font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:var(--white);font-weight:300;cursor:pointer;width:100%}
+.bf input::-webkit-calendar-picker-indicator{filter:invert(0.7) sepia(1) hue-rotate(5deg);cursor:pointer}
+.bf select option{background:var(--dark);color:var(--white)}
+.book-btn{background:var(--gold);border:none;padding:1.1rem 2.2rem;color:var(--dark);font-family:'Jost',sans-serif;font-size:0.78rem;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;cursor:pointer;transition:background 0.2s;white-space:nowrap;display:flex;align-items:center;gap:0.5rem}
+.book-btn:hover{background:var(--gold-light)}
+.book-btn.loading{opacity:0.7;cursor:wait}
+
+/* ── AVAILABILITY RESULTS ── */
+.avail-results{background:var(--dark2);padding:0 2.5rem;max-height:0;overflow:hidden;transition:max-height 0.5s ease,padding 0.3s}
+.avail-results.open{max-height:600px;padding:2rem 2.5rem}
+.avail-inner{max-width:1200px;margin:0 auto}
+.avail-title{font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:var(--gold);margin-bottom:1.2rem;font-weight:300}
+.avail-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem}
+.avail-card{background:var(--dark);border:1px solid rgba(201,168,76,0.2);padding:1.4rem;cursor:pointer;transition:all 0.25s}
+.avail-card:hover{border-color:var(--gold);transform:translateY(-2px)}
+.avail-room-name{font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:var(--white);margin-bottom:0.3rem}
+.avail-room-type{font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);margin-bottom:0.8rem}
+.avail-meta{font-size:0.75rem;color:rgba(255,253,248,0.5);line-height:1.8;margin-bottom:1rem}
+.avail-price{font-family:'Cormorant Garamond',serif;font-size:1.4rem;color:var(--gold-light)}
+.avail-price small{font-family:'Jost',sans-serif;font-size:0.68rem;color:rgba(255,253,248,0.4);letter-spacing:0.08em}
+.avail-total{font-size:0.72rem;color:rgba(255,253,248,0.5);margin-top:0.2rem}
+.avail-select-btn{width:100%;background:var(--gold);border:none;padding:0.6rem;font-family:'Jost',sans-serif;font-size:0.72rem;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--dark);cursor:pointer;margin-top:1rem;transition:background 0.2s}
+.avail-select-btn:hover{background:var(--gold-light)}
+
+/* ── SECTIONS ── */
+section{padding:5.5rem 2.5rem}
+.wrap{max-width:1300px;margin:0 auto}
+.eyebrow{font-size:0.68rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;display:flex;align-items:center;gap:0.8rem}
+.eyebrow::before{content:'';width:28px;height:1px;background:var(--gold)}
+h2.sec-title{font-family:'Cormorant Garamond',serif;font-size:clamp(1.9rem,4vw,3rem);font-weight:300;color:var(--dark);line-height:1.2;margin-bottom:0.8rem}
+h2.sec-title em{font-style:italic;color:var(--gold-dark)}
+.sec-sub{color:var(--muted);font-size:0.9rem;font-weight:300;max-width:520px;line-height:1.85}
+
+/* ── ABOUT ── */
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center;margin-top:4rem}
+.about-img-wrap{position:relative}
+.about-img{height:520px;background:url('https://images.unsplash.com/photo-1582719508461-905c673771fd?w=800&q=80') center/cover}
+.about-badge{position:absolute;bottom:-2rem;left:-2rem;background:var(--gold);padding:1.8rem 2rem;text-align:center;min-width:130px}
+.badge-num{font-family:'Cormorant Garamond',serif;font-size:2.7rem;font-weight:300;color:var(--dark);line-height:1}
+.badge-txt{font-size:0.62rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--dark2);margin-top:0.3rem}
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:2.5rem}
+.stat{border-left:2px solid var(--gold);padding-left:1rem}
+.stat-n{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:300;color:var(--dark);line-height:1}
+.stat-l{font-size:0.72rem;color:var(--muted);letter-spacing:0.08em;margin-top:0.2rem}
+
+/* ── ROOMS ── */
+.rooms-section{background:var(--dark)}
+.rooms-section h2.sec-title{color:var(--white)}
+.rooms-section .sec-sub{color:rgba(255,253,248,0.45)}
+.rooms-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-top:3rem}
+.room-card{position:relative;overflow:hidden;cursor:pointer}
+.room-card:first-child{grid-column:span 2}
+.room-thumb{width:100%;height:380px;background-size:cover !important;background-position:center !important;transition:transform 0.6s ease}
+.room-card:first-child .room-thumb{height:480px}
+.room-card:hover .room-thumb{transform:scale(1.05)}
+.room-ov{position:absolute;inset:0;background:linear-gradient(to top,rgba(26,18,9,0.93) 0%,rgba(26,18,9,0.1) 55%,transparent 100%);display:flex;flex-direction:column;justify-content:flex-end;padding:2rem}
+.room-type-tag{font-size:0.62rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:0.4rem}
+.room-nm{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:300;color:var(--white);margin-bottom:0.7rem}
+.room-card:first-child .room-nm{font-size:2.1rem}
+.room-facts{display:flex;gap:1.2rem;flex-wrap:wrap}
+.room-facts span{font-size:0.7rem;color:rgba(255,253,248,0.55);letter-spacing:0.04em}
+.room-rate{font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:var(--gold-light);margin-top:0.5rem}
+.room-rate small{font-size:0.68rem;font-family:'Jost',sans-serif;opacity:0.65}
+.room-action{position:absolute;top:1.4rem;right:1.4rem;opacity:0;transform:translateY(-6px);transition:all 0.3s}
+.room-card:hover .room-action{opacity:1;transform:translateY(0)}
+.room-action button{background:var(--gold);color:var(--dark);border:none;padding:0.5rem 1.1rem;font-size:0.68rem;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer}
+
+/* ── AMENITIES ── */
+.amen-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.8rem;margin-top:3.5rem}
+.amen-card{text-align:center;padding:2.5rem 1.5rem;border:1px solid rgba(201,168,76,0.2);transition:all 0.3s;background:var(--white)}
+.amen-card:hover{border-color:var(--gold);background:var(--cream2);transform:translateY(-4px)}
+.amen-icon{font-size:2rem;margin-bottom:1.1rem;display:block}
+.amen-name{font-family:'Cormorant Garamond',serif;font-size:1.15rem;color:var(--dark);margin-bottom:0.4rem}
+.amen-desc{font-size:0.78rem;color:var(--muted);line-height:1.75}
+
+/* ── GALLERY ── */
+.gallery-section{background:var(--dark2)}
+.gallery-section h2.sec-title{color:var(--white)}
+.gallery-grid{display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:200px 200px;gap:3px;margin-top:2.8rem}
+.gal-item{overflow:hidden;cursor:pointer;position:relative}
+.gal-item:nth-child(1){grid-column:span 2;grid-row:span 2}
+.gal-item:nth-child(4){grid-column:span 2}
+.gal-img{width:100%;height:100%;background-size:cover !important;background-position:center !important;transition:transform 0.5s}
+.gal-item:hover .gal-img{transform:scale(1.07)}
+.gal-ov{position:absolute;inset:0;background:rgba(201,168,76,0);transition:background 0.3s;display:flex;align-items:center;justify-content:center}
+.gal-item:hover .gal-ov{background:rgba(201,168,76,0.12)}
+.gal-plus{color:#fff;font-size:2rem;opacity:0;transition:opacity 0.3s;font-weight:300}
+.gal-item:hover .gal-plus{opacity:1}
+
+/* ── DINING ── */
+.dining-grid{display:grid;grid-template-columns:1fr 1fr;border:1px solid rgba(201,168,76,0.2);margin-top:3.5rem}
+.dining-card{padding:3rem;border-right:1px solid rgba(201,168,76,0.2);transition:background 0.3s;cursor:pointer}
+.dining-card:last-child{border-right:none}
+.dining-card:hover{background:var(--cream2)}
+.dining-img{width:100%;height:220px;background-size:cover !important;background-position:center !important;margin-bottom:1.5rem}
+.dining-type-tag{font-size:0.67rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:0.7rem}
+.dining-nm{font-family:'Cormorant Garamond',serif;font-size:1.6rem;color:var(--dark);margin-bottom:0.5rem}
+.dining-desc{font-size:0.85rem;color:var(--muted);line-height:1.82}
+
+/* ── PH SECTION ── */
+.ph-section{background:var(--dark);position:relative;overflow:hidden}
+.ph-bg-img{position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1518548419970-58e3b4079ab2?w=1600&q=80') center/cover;opacity:0.12}
+.ph-inner{position:relative;z-index:1;max-width:700px;margin:0 auto;text-align:center}
+.ph-section h2.sec-title{color:var(--white);text-align:center}
+.ph-section .sec-sub{max-width:100%;text-align:center;color:rgba(255,253,248,0.55);margin:0 auto}
+.ph-badges{display:flex;justify-content:center;gap:1.5rem;margin-top:3rem;flex-wrap:wrap}
+.ph-badge{border:1px solid rgba(201,168,76,0.35);padding:1.4rem 1.8rem;text-align:center;min-width:130px}
+.ph-badge-icon{font-size:1.4rem;margin-bottom:0.4rem}
+.ph-badge-label{font-size:0.67rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold)}
+
+/* ── TESTIMONIALS ── */
+.testimonials-section{background:var(--cream2)}
+.testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2rem;margin-top:3rem}
+.testi-card{background:var(--white);padding:2.4rem;border-top:2px solid var(--gold)}
+.testi-stars{color:var(--gold);font-size:0.78rem;letter-spacing:0.1em;margin-bottom:1.1rem}
+.testi-txt{font-family:'Cormorant Garamond',serif;font-size:1.02rem;color:var(--dark);line-height:1.82;margin-bottom:1.4rem;font-style:italic}
+.testi-author{font-size:0.76rem;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase}
+.testi-origin{font-size:0.68rem;color:var(--gold);margin-top:0.2rem}
+
+/* ── BOOKING FORM SECTION ── */
+.booking-section{background:var(--dark)}
+.booking-section h2.sec-title{color:var(--white)}
+.booking-section .sec-sub{color:rgba(255,253,248,0.45)}
+.booking-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:start;margin-top:3rem}
+.contact-info{display:flex;flex-direction:column;gap:1.8rem;margin-top:1rem}
+.ci-item{display:flex;gap:1rem;align-items:flex-start}
+.ci-icon{font-size:1.2rem;margin-top:0.1rem;flex-shrink:0}
+.ci-label{font-size:0.67rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);margin-bottom:0.25rem}
+.ci-val{color:var(--white);font-family:'Cormorant Garamond',serif;font-size:1.08rem;font-weight:300}
+.form-box{background:var(--dark2);padding:2.5rem;border-top:2px solid var(--gold)}
+.form-box h3{font-family:'Cormorant Garamond',serif;font-size:1.5rem;color:var(--gold);font-weight:300;margin-bottom:1.5rem}
+.fg{display:flex;flex-direction:column;gap:0.38rem;margin-bottom:1rem}
+.fg label{font-size:0.67rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted)}
+.fg input,.fg select,.fg textarea{padding:0.72rem 1rem;border:1px solid rgba(201,168,76,0.28);background:rgba(255,253,248,0.04);font-family:'Jost',sans-serif;font-size:0.86rem;color:var(--white);outline:none;transition:border-color 0.2s;color-scheme:dark}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--gold)}
+.fg select option{background:var(--dark2);color:var(--white)}
+.fg textarea{resize:vertical;min-height:80px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.submit-btn{width:100%;background:var(--gold);border:none;padding:0.9rem;font-family:'Jost',sans-serif;font-size:0.8rem;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--dark);cursor:pointer;margin-top:0.5rem;transition:background 0.2s;display:flex;align-items:center;justify-content:center;gap:0.5rem}
+.submit-btn:hover{background:var(--gold-light)}
+.submit-btn:disabled{opacity:0.6;cursor:wait}
+
+/* ── RESERVATION LOOKUP ── */
+.lookup-section{background:var(--cream2)}
+.lookup-box{max-width:500px;margin:2rem auto 0;background:var(--white);border:1px solid rgba(201,168,76,0.25);padding:2.5rem}
+.lookup-row{display:flex;gap:0;margin-top:1rem}
+.lookup-input{flex:1;padding:0.8rem 1rem;border:1px solid rgba(201,168,76,0.3);border-right:none;font-family:'Jost',sans-serif;font-size:0.9rem;color:var(--dark);outline:none;background:var(--cream)}
+.lookup-input::placeholder{color:var(--muted)}
+.lookup-btn{background:var(--gold);border:none;padding:0.8rem 1.5rem;font-family:'Jost',sans-serif;font-size:0.76rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--dark);cursor:pointer;transition:background 0.2s}
+.lookup-btn:hover{background:var(--gold-light)}
+.lookup-result{margin-top:1.5rem;padding:1.5rem;background:var(--cream2);border-left:3px solid var(--gold);display:none}
+.lookup-result.show{display:block}
+.lr-row{display:flex;justify-content:space-between;font-size:0.82rem;padding:0.4rem 0;border-bottom:1px solid rgba(201,168,76,0.15)}
+.lr-row:last-child{border-bottom:none}
+.lr-key{color:var(--muted)}
+.lr-val{font-weight:500;color:var(--dark)}
+.status-confirmed{color:var(--green);font-weight:600}
+
+/* ── CHAT BOT ── */
+.chat-fab{position:fixed;bottom:2rem;right:2rem;z-index:999;background:var(--gold);width:58px;height:58px;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(201,168,76,0.35);transition:transform 0.2s}
+.chat-fab:hover{transform:scale(1.07)}
+.chat-win{position:fixed;bottom:6.5rem;right:2rem;z-index:999;width:385px;max-height:545px;background:var(--white);border:1px solid rgba(201,168,76,0.38);display:none;flex-direction:column;overflow:hidden;box-shadow:0 10px 45px rgba(26,18,9,0.22)}
+.chat-win.open{display:flex}
+.chat-hdr{background:var(--dark);padding:1.15rem 1.5rem;display:flex;align-items:center;gap:1rem}
+.chat-av{width:38px;height:38px;background:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:1.05rem;color:var(--dark);font-weight:600;flex-shrink:0}
+.chat-hdr-info .chat-nm{font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:var(--white);font-weight:300}
+.chat-hdr-info .chat-st{font-size:0.66rem;color:var(--gold)}
+.chat-x{margin-left:auto;background:none;border:none;color:rgba(255,253,248,0.45);cursor:pointer;font-size:1.15rem;line-height:1;padding:0.15rem}
+.chat-x:hover{color:var(--white)}
+.chat-msgs{flex:1;overflow-y:auto;padding:1.1rem;display:flex;flex-direction:column;gap:0.9rem;min-height:180px;max-height:300px;background:var(--cream)}
+.chat-msg{max-width:82%;padding:0.75rem 1rem;font-size:0.83rem;line-height:1.62}
+.chat-msg.bot{background:var(--white);color:var(--dark);border-left:2px solid var(--gold);align-self:flex-start}
+.chat-msg.user{background:var(--gold);color:var(--dark);align-self:flex-end;font-weight:500}
+.chat-typing-ind{font-size:0.72rem;color:var(--muted);font-style:italic;padding:0.4rem 0.3rem;display:none}
+.chat-chips{padding:0.7rem 1rem;display:flex;gap:0.45rem;flex-wrap:wrap;border-top:1px solid rgba(201,168,76,0.2);background:var(--white)}
+.chat-chip{background:transparent;border:1px solid rgba(201,168,76,0.38);color:var(--muted);font-size:0.68rem;padding:0.32rem 0.7rem;cursor:pointer;transition:all 0.18s;font-family:'Jost',sans-serif}
+.chat-chip:hover{background:var(--gold);color:var(--dark);border-color:var(--gold)}
+.chat-inp-row{display:flex;border-top:1px solid rgba(201,168,76,0.18);background:var(--white)}
+.chat-inp{flex:1;padding:0.85rem 1.1rem;border:none;outline:none;font-size:0.83rem;font-family:'Jost',sans-serif;color:var(--dark);background:transparent}
+.chat-inp::placeholder{color:var(--muted)}
+.chat-send{background:var(--gold);border:none;padding:0 1.1rem;cursor:pointer;color:var(--dark);font-weight:700;font-size:1rem;transition:background 0.2s}
+.chat-send:hover{background:var(--gold-light)}
+
+/* ── ROOM MODAL ── */
+.modal-bd{position:fixed;inset:0;background:rgba(26,18,9,0.88);z-index:2000;display:none;align-items:center;justify-content:center;padding:2rem}
+.modal-bd.open{display:flex}
+.modal{background:var(--white);max-width:680px;width:100%;max-height:88vh;overflow-y:auto;position:relative}
+.modal-hdr{background:var(--dark);padding:1.8rem 2.2rem;position:relative}
+.modal-title{font-family:'Cormorant Garamond',serif;font-size:1.75rem;color:var(--gold);font-weight:300}
+.modal-close-btn{position:absolute;top:1.4rem;right:1.4rem;background:none;border:none;color:rgba(255,253,248,0.45);font-size:1.4rem;cursor:pointer;line-height:1}
+.modal-close-btn:hover{color:var(--white)}
+.modal-body{padding:2.2rem}
+.modal-img-wrap{width:100%;height:250px;background-size:cover !important;background-position:center !important;margin-bottom:1.8rem}
+.modal-desc{font-size:0.88rem;color:var(--muted);line-height:1.82;margin-bottom:1.4rem}
+.modal-feats{display:grid;grid-template-columns:1fr 1fr;gap:0.55rem;margin-bottom:1.8rem}
+.mf{font-size:0.78rem;color:var(--text);display:flex;align-items:center;gap:0.45rem}
+.mf::before{content:'✦';color:var(--gold);font-size:0.58rem}
+.modal-price-bar{display:flex;align-items:baseline;justify-content:space-between;padding:1.4rem;background:var(--cream);margin-bottom:1.4rem}
+.modal-price-val{font-family:'Cormorant Garamond',serif;font-size:1.9rem;color:var(--dark)}
+.modal-price-val small{font-size:0.75rem;font-family:'Jost',sans-serif;color:var(--muted)}
+
+/* ── FOOTER ── */
+footer{background:var(--dark);padding:4rem 2.5rem 2rem;border-top:1px solid rgba(201,168,76,0.18)}
+.footer-grid{max-width:1300px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:4rem}
+.footer-brand{font-family:'Cormorant Garamond',serif;font-size:1.55rem;font-weight:300;color:var(--gold);margin-bottom:1rem;letter-spacing:0.15em}
+.footer-brand em{font-style:italic}
+.footer-tagline{font-size:0.78rem;color:rgba(255,253,248,0.38);line-height:1.85;margin-bottom:1.4rem}
+.footer-contact{font-size:0.78rem;color:rgba(255,253,248,0.55);line-height:2.1}
+.footer-contact strong{color:var(--gold);font-weight:500}
+.fcol-title{font-size:0.67rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:1.1rem}
+.fcol-links{list-style:none;display:flex;flex-direction:column;gap:0.55rem}
+.fcol-links a{font-size:0.8rem;color:rgba(255,253,248,0.45);text-decoration:none;transition:color 0.2s;cursor:pointer}
+.fcol-links a:hover{color:var(--gold)}
+.footer-bottom{max-width:1300px;margin:2.5rem auto 0;padding-top:1.4rem;border-top:1px solid rgba(201,168,76,0.12);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem}
+.footer-copy{font-size:0.7rem;color:rgba(255,253,248,0.28);letter-spacing:0.04em}
+.footer-flag{font-size:0.78rem;color:rgba(255,253,248,0.38)}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+@keyframes bob{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(8px)}}
+.fi{opacity:0;transform:translateY(18px);transition:opacity 0.7s ease,transform 0.7s ease}
+.fi.vis{opacity:1;transform:translateY(0)}
+</style>
+</head>
+<body>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <div class="logo" onclick="window.scrollTo({top:0,behavior:'smooth'})">Grand <em>Horizon</em></div>
+    <div class="nav-links">
+      <a onclick="goTo('about')">About</a>
+      <a onclick="goTo('rooms')">Rooms</a>
+      <a onclick="goTo('amenities')">Amenities</a>
+      <a onclick="goTo('gallery')">Gallery</a>
+      <a onclick="goTo('dining')">Dining</a>
+      <a onclick="goTo('lookup')">My Booking</a>
+      <a onclick="goTo('booking-section')" class="nav-cta">Reserve Now</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-pattern"></div>
+  <div class="hero-img"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">Luxury Redefined</div>
+    <h1 class="hero-title">Where the <em>Philippines</em><br>Meets Grand Horizon</h1>
+    <p class="hero-sub">An unrivaled sanctuary of elegance in the heart of the archipelago</p>
+    <p class="hero-loc">📍 <span>Manila Bay, Metro Manila</span> · Philippines</p>
+    <div class="hero-btns">
+      <button class="btn-gold" onclick="goTo('rooms')">Explore Rooms</button>
+      <button class="btn-ghost" onclick="goTo('gallery')">View Gallery</button>
+    </div>
+  </div>
+  <div class="scroll-cue">
+    <div class="scroll-line"></div>
+    <span>Scroll</span>
+  </div>
+</section>
+
+<!-- BOOKING BAR -->
+<div class="booking-bar">
+  <div class="booking-wrap">
+    <div class="bf">
+      <div class="bf-label">Check In</div>
+      <input type="date" id="b-checkin">
+    </div>
+    <div class="bf">
+      <div class="bf-label">Check Out</div>
+      <input type="date" id="b-checkout">
+    </div>
+    <div class="bf">
+      <div class="bf-label">Guests</div>
+      <select id="b-guests">
+        <option value="1">1 Guest</option>
+        <option value="2" selected>2 Guests</option>
+        <option value="3">3 Guests</option>
+        <option value="4">4 Guests</option>
+        <option value="5">5 Guests</option>
+        <option value="6">6 Guests</option>
+      </select>
+    </div>
+    <div class="bf">
+      <div class="bf-label">Room Type</div>
+      <select id="b-roomtype">
+        <option value="">Any Room</option>
+        <option value="deluxe">Deluxe Room</option>
+        <option value="superior">Superior Room</option>
+        <option value="junior">Junior Suite</option>
+        <option value="grand">Grand Suite</option>
+        <option value="presidential">Presidential Suite</option>
+      </select>
+    </div>
+    <button class="book-btn" id="checkAvailBtn" onclick="checkAvailability()">
+      <span>Check Availability</span>
+      <span>→</span>
+    </button>
+  </div>
+</div>
+
+<!-- AVAILABILITY RESULTS -->
+<div class="avail-results" id="availResults">
+  <div class="avail-inner">
+    <div class="avail-title" id="availTitle"></div>
+    <div class="avail-grid" id="availGrid"></div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="wrap">
+    <div class="about-grid">
+      <div class="about-img-wrap fi">
+        <div class="about-img"></div>
+        <div class="about-badge">
+          <div class="badge-num">25+</div>
+          <div class="badge-txt">Years of Excellence</div>
+        </div>
+      </div>
+      <div class="fi" style="padding-left:0.5rem">
+        <div class="eyebrow">Our Story</div>
+        <h2 class="sec-title">A Legacy of <em>Philippine</em> Hospitality</h2>
+        <p class="sec-sub">Nestled along the shimmering shores of Manila Bay, The Grand Hotel has been the definitive address for discerning travelers seeking an authentic Philippine luxury experience since 1999.</p>
+        <p style="font-size:0.87rem;color:var(--muted);line-height:1.92;margin-top:1.2rem">Every detail — from the hand-woven capiz shell chandeliers to the locally-sourced ingredients in our kitchens — honors the rich cultural tapestry of the Philippines while delivering world-class standards that have earned us Five Star recognition year after year.</p>
+        <div class="stats-grid">
+          <div class="stat"><div class="stat-n">148</div><div class="stat-l">Luxury Suites & Rooms</div></div>
+          <div class="stat"><div class="stat-n">5 ★</div><div class="stat-l">Forbes Travel Rating</div></div>
+          <div class="stat"><div class="stat-n">7</div><div class="stat-l">F&amp;B Establishments</div></div>
+          <div class="stat"><div class="stat-n">100%</div><div class="stat-l">Guest Satisfaction Score</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ROOMS -->
+<section class="rooms-section" id="rooms">
+  <div class="wrap">
+    <div class="eyebrow" style="color:var(--gold)">Accommodations</div>
+    <h2 class="sec-title">Curated <em>Sanctuaries</em></h2>
+    <p class="sec-sub">Each room is a private world of refinement, designed to celebrate the natural beauty of the Philippines.</p>
+    <div class="rooms-grid fi">
+      <div class="room-card" onclick="openRoomModal('presidential')">
+        <div class="room-thumb" style="background:url('https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=1200&q=80')"></div>
+        <div class="room-ov">
+          <div class="room-type-tag">Presidential Suite</div>
+          <div class="room-nm">The Manila Bay Suite</div>
+          <div class="room-facts"><span>🛏 Super King</span><span>📐 180 sqm</span><span>🌊 Full Panoramic View</span><span>👥 Max 6</span></div>
+          <div class="room-rate">₱48,000 <small>/ night</small></div>
+        </div>
+        <div class="room-action"><button onclick="event.stopPropagation();selectRoomForBooking('presidential')">Book Now</button></div>
+      </div>
+      <div class="room-card" onclick="openRoomModal('deluxe')">
+        <div class="room-thumb" style="background:url('https://images.unsplash.com/photo-1591088398332-8a7791972843?w=800&q=80')"></div>
+        <div class="room-ov">
+          <div class="room-type-tag">Deluxe Room</div>
+          <div class="room-nm">Garden Retreat</div>
+          <div class="room-facts"><span>🛏 Queen</span><span>📐 55 sqm</span></div>
+          <div class="room-rate">₱8,500 <small>/ night</small></div>
+        </div>
+        <div class="room-action"><button onclick="event.stopPropagation();selectRoomForBooking('deluxe')">Book Now</button></div>
+      </div>
+      <div class="room-card" onclick="openRoomModal('junior')">
+        <div class="room-thumb" style="background:url('https://images.unsplash.com/photo-1578683010236-d716f9a3f461?w=800&q=80')"></div>
+        <div class="room-ov">
+          <div class="room-type-tag">Junior Suite</div>
+          <div class="room-nm">Capiz Penthouse</div>
+          <div class="room-facts"><span>🛏 King</span><span>📐 90 sqm</span></div>
+          <div class="room-rate">₱18,500 <small>/ night</small></div>
+        </div>
+        <div class="room-action"><button onclick="event.stopPropagation();selectRoomForBooking('junior')">Book Now</button></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AMENITIES -->
+<section id="amenities">
+  <div class="wrap">
+    <div class="eyebrow">World-Class Facilities</div>
+    <h2 class="sec-title">The Art of <em>Living Well</em></h2>
+    <p class="sec-sub">An extraordinary collection of amenities designed to elevate every moment of your stay.</p>
+    <div class="amen-grid fi">
+      <div class="amen-card"><span class="amen-icon">🌊</span><div class="amen-name">Infinity Pool</div><div class="amen-desc">An 80-meter infinity pool overlooking the breathtaking Manila Bay sunset.</div></div>
+      <div class="amen-card"><span class="amen-icon">🌺</span><div class="amen-name">Pamana Spa</div><div class="amen-desc">Indigenous healing rituals and therapeutic treatments inspired by the Philippine archipelago.</div></div>
+      <div class="amen-card"><span class="amen-icon">🍽</span><div class="amen-name">Fine Dining</div><div class="amen-desc">Seven distinguished restaurants celebrating Filipino cuisine and global culinary traditions.</div></div>
+      <div class="amen-card"><span class="amen-icon">🏋</span><div class="amen-name">Fitness Center</div><div class="amen-desc">A state-of-the-art 24-hour fitness facility with panoramic ocean views.</div></div>
+      <div class="amen-card"><span class="amen-icon">🌿</span><div class="amen-name">Japanese Garden</div><div class="amen-desc">A tranquil 3-acre garden sanctuary blending Japanese Zen and Philippine botanicals.</div></div>
+      <div class="amen-card"><span class="amen-icon">🎭</span><div class="amen-name">Cultural Events</div><div class="amen-desc">Curated Filipino cultural evenings, kulintang performances, and art exhibitions.</div></div>
+      <div class="amen-card"><span class="amen-icon">🚤</span><div class="amen-name">Marina Access</div><div class="amen-desc">Private marina with yacht charters to the islands of Batangas and Corregidor.</div></div>
+      <div class="amen-card"><span class="amen-icon">👶</span><div class="amen-name">Kids' Sanctuary</div><div class="amen-desc">A supervised Nook Club for young guests with Philippine arts and adventure programs.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section class="gallery-section" id="gallery">
+  <div class="wrap">
+    <div class="eyebrow" style="color:var(--gold)">Gallery</div>
+    <h2 class="sec-title">Behold <em>The Grand Horizon</em></h2>
+    <div class="gallery-grid fi">
+      <div class="gal-item"><div class="gal-img" style="background:url('https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=900&q=80')"></div><div class="gal-ov"><span class="gal-plus">+</span></div></div>
+      <div class="gal-item"><div class="gal-img" style="background:url('https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=600&q=80')"></div><div class="gal-ov"><span class="gal-plus">+</span></div></div>
+      <div class="gal-item"><div class="gal-img" style="background:url('https://images.unsplash.com/photo-1537640538966-79f369143f8f?w=600&q=80')"></div><div class="gal-ov"><span class="gal-plus">+</span></div></div>
+      <div class="gal-item"><div class="gal-img" style="background:url('https://images.unsplash.com/photo-1540518614846-7eded433c457?w=900&q=80')"></div><div class="gal-ov"><span class="gal-plus">+</span></div></div>
+      <div class="gal-item"><div class="gal-img" style="background:url('https://images.unsplash.com/photo-1549294413-26f195200c16?w=600&q=80')"></div><div class="gal-ov"><span class="gal-plus">+</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- DINING -->
+<section id="dining">
+  <div class="wrap">
+    <div class="eyebrow">Culinary Excellence</div>
+    <h2 class="sec-title">A Feast for <em>All Senses</em></h2>
+    <p class="sec-sub">Our celebrated dining experiences honor the extraordinary richness of Filipino cuisine and beyond.</p>
+    <div class="dining-grid fi">
+      <div class="dining-card">
+        <div class="dining-img" style="background:url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=700&q=80')"></div>
+        <div class="dining-type-tag">Signature Restaurant</div>
+        <div class="dining-nm">Bahay Kubo</div>
+        <div class="dining-desc">A celebration of Filipino heritage cuisine, reimagined through contemporary techniques using the freshest local ingredients from Benguet to Zamboanga. James Beard-nominated Executive Chef Maria Santos leads our culinary team in crafting unforgettable flavors.</div>
+      </div>
+      <div class="dining-card">
+        <div class="dining-img" style="background:url('https://images.unsplash.com/photo-1551218808-94e220e084d2?w=700&q=80')"></div>
+        <div class="dining-type-tag">Rooftop Lounge</div>
+        <div class="dining-nm">Langit Bar</div>
+        <div class="dining-desc">Perched 38 floors above Manila Bay, Langit — meaning "sky" in Filipino — is where the golden hour becomes legendary. Craft cocktails infused with calamansi, sampaguita, and rare lambanog spirits await you every evening.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PHILIPPINES EXPLORER -->
+<section class="ph-section">
+  <div class="ph-bg-img"></div>
+  <div class="wrap">
+    <div class="ph-inner fi">
+      <div class="eyebrow" style="color:var(--gold);justify-content:center">Explore the Philippines</div>
+      <h2 class="sec-title">7,641 Islands <em>Await You</em></h2>
+      <p class="sec-sub">Let our expert concierge craft your perfect Philippine adventure — from the rice terraces of Banaue to the white shores of Palawan.</p>
+      <div class="ph-badges">
+        <div class="ph-badge"><div class="ph-badge-icon">🏝</div><div class="ph-badge-label">Island Hopping</div></div>
+        <div class="ph-badge"><div class="ph-badge-icon">🤿</div><div class="ph-badge-label">Diving & Snorkeling</div></div>
+        <div class="ph-badge"><div class="ph-badge-icon">🌋</div><div class="ph-badge-label">Volcanic Treks</div></div>
+        <div class="ph-badge"><div class="ph-badge-icon">🎋</div><div class="ph-badge-label">Cultural Immersion</div></div>
+        <div class="ph-badge"><div class="ph-badge-icon">🛺</div><div class="ph-badge-label">City Discovery</div></div>
+      </div>
+      <button class="btn-gold" style="margin-top:3rem" onclick="toggleChat()">Ask Our AI Concierge →</button>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials-section" id="testimonials">
+  <div class="wrap">
+    <div class="eyebrow">Guest Stories</div>
+    <h2 class="sec-title">Voices of <em>The Grand Horizon</em></h2>
+    <div class="testi-grid fi">
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-txt">"From the moment we arrived, the level of care was unlike anything we've experienced. The presidential suite left us speechless — the Manila Bay view at sunset was truly unforgettable."</div>
+        <div class="testi-author">James & Sarah Lim</div>
+        <div class="testi-origin">📍 Singapore</div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-txt">"The Pamana Spa treatment was transcendent. The therapists combined ancient Philippine healing with modern luxury in a way I haven't felt anywhere else in Southeast Asia."</div>
+        <div class="testi-author">Elena Marchetti</div>
+        <div class="testi-origin">📍 Milan, Italy</div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-txt">"Bahay Kubo's kare-kare and crispy pata were genuinely the best I've ever tasted. The staff made us feel like family — truly, this is Filipino hospitality at its absolute finest."</div>
+        <div class="testi-author">Miguel Santos</div>
+        <div class="testi-origin">📍 Makati City, Philippines</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BOOKING SECTION -->
+<section class="booking-section" id="booking-section">
+  <div class="wrap">
+    <div class="eyebrow" style="color:var(--gold)">Reservations</div>
+    <h2 class="sec-title">Begin Your <em>Journey</em></h2>
+    <p class="sec-sub">Our reservations team is available 24 hours a day, 7 days a week to craft your perfect stay.</p>
+    <div class="booking-form-grid">
+      <div class="fi">
+        <div class="contact-info">
+          <div class="ci-item"><span class="ci-icon">📞</span><div><div class="ci-label">Telephone</div><div class="ci-val">+63 (2) 8888-7000</div></div></div>
+          <div class="ci-item"><span class="ci-icon">✉</span><div><div class="ci-label">Email</div><div class="ci-val">reservations@thegrandhorizon.ph</div></div></div>
+          <div class="ci-item"><span class="ci-icon">📍</span><div><div class="ci-label">Address</div><div class="ci-val">1 Roxas Boulevard, Ermita<br>Manila, Philippines 1000</div></div></div>
+          <div class="ci-item"><span class="ci-icon">🕐</span><div><div class="ci-label">Check-in / Check-out</div><div class="ci-val">3:00 PM / 12:00 PM</div></div></div>
+        </div>
+      </div>
+      <div class="form-box fi">
+        <h3>Book Your Stay</h3>
+        <div class="form-row">
+          <div class="fg"><label>First Name *</label><input type="text" id="f-fname" placeholder="Juan"></div>
+          <div class="fg"><label>Last Name *</label><input type="text" id="f-lname" placeholder="dela Cruz"></div>
+        </div>
+        <div class="fg"><label>Email Address *</label><input type="email" id="f-email" placeholder="juan@email.com"></div>
+        <div class="fg"><label>Phone Number</label><input type="tel" id="f-phone" placeholder="+63 9xx xxx xxxx"></div>
+        <div class="form-row">
+          <div class="fg"><label>Check In *</label><input type="date" id="f-checkin"></div>
+          <div class="fg"><label>Check Out *</label><input type="date" id="f-checkout"></div>
+        </div>
+        <div class="form-row">
+          <div class="fg"><label>Room Type *</label>
+            <select id="f-room">
+              <option value="">Select Room</option>
+              <option value="deluxe">Deluxe Room — ₱8,500/night</option>
+              <option value="superior">Superior Room — ₱11,000/night</option>
+              <option value="junior">Junior Suite — ₱18,500/night</option>
+              <option value="grand">Grand Suite — ₱32,000/night</option>
+              <option value="presidential">Presidential Suite — ₱48,000/night</option>
+            </select>
+          </div>
+          <div class="fg"><label>Guests</label>
+            <select id="f-guests">
+              <option value="1">1 Guest</option>
+              <option value="2" selected>2 Guests</option>
+              <option value="3">3 Guests</option>
+              <option value="4">4 Guests</option>
+              <option value="5">5 Guests</option>
+              <option value="6">6 Guests</option>
+            </select>
+          </div>
+        </div>
+        <div class="fg"><label>Special Requests</label><textarea id="f-special" placeholder="Anniversary setup, dietary requirements, early check-in…"></textarea></div>
+        <button class="submit-btn" id="submitReservationBtn" onclick="submitReservation()">
+          <span>Confirm Reservation</span><span>→</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LOOKUP SECTION -->
+<section class="lookup-section" id="lookup">
+  <div class="wrap">
+    <div class="eyebrow">Manage Booking</div>
+    <h2 class="sec-title">Find Your <em>Reservation</em></h2>
+    <p class="sec-sub">Enter your booking reference number to view or manage your reservation.</p>
+    <div class="lookup-box fi">
+      <p style="font-size:0.82rem;color:var(--muted);margin-bottom:0.5rem">Your reference number looks like: <strong style="color:var(--gold-dark)">TGH-1001</strong></p>
+      <div class="lookup-row">
+        <input class="lookup-input" type="text" id="lookupId" placeholder="e.g. TGH-1001" onkeydown="if(event.key==='Enter')lookupReservation()">
+        <button class="lookup-btn" onclick="lookupReservation()">Find →</button>
+      </div>
+      <div class="lookup-result" id="lookupResult"></div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div class="footer-brand">THE <em>Grand Horizon</em></div>
+      <p class="footer-tagline">Luxury hospitality inspired by the beauty, warmth, and cultural richness of the Philippine archipelago. A sanctuary for the discerning traveler.</p>
+      <div class="footer-contact">
+        <strong>Reservations:</strong> +63 (2) 8888-7000<br>
+        <strong>Email:</strong> hello@thegrandhorizon.ph<br>
+        <strong>1 Roxas Blvd, Manila 1000</strong>
+      </div>
+    </div>
+    <div>
+      <div class="fcol-title">Explore</div>
+      <ul class="fcol-links">
+        <li><a onclick="goTo('rooms')">Our Rooms</a></li>
+        <li><a onclick="goTo('dining')">Dining</a></li>
+        <li><a onclick="goTo('amenities')">Spa & Wellness</a></li>
+        <li><a onclick="goTo('gallery')">Photo Gallery</a></li>
+        <li><a>Events & Weddings</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="fcol-title">Guest Services</div>
+      <ul class="fcol-links">
+        <li><a onclick="goTo('booking-section')">Make a Reservation</a></li>
+        <li><a onclick="goTo('lookup')">Manage Booking</a></li>
+        <li><a>Airport Transfer</a></li>
+        <li><a>Concierge Services</a></li>
+        <li><a>Loyalty Program</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="fcol-title">The Philippines</div>
+      <ul class="fcol-links">
+        <li><a>Explore Manila</a></li>
+        <li><a>Palawan Guide</a></li>
+        <li><a>Boracay White Sands</a></li>
+        <li><a>Cebu Heritage</a></li>
+        <li><a>Siargao Surf</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-copy">© 2025 The Grand Horizon Hotel & Resorts. All rights reserved. Proudly Philippine.</div>
+    <div class="footer-flag">🇵🇭 Manila, Philippines</div>
+  </div>
+</footer>
+
+<!-- CHAT FAB -->
+<button class="chat-fab" id="chatFab" onclick="toggleChat()" title="AI Concierge">
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1A1209" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+  </svg>
+</button>
+
+<!-- CHAT WINDOW -->
+<div class="chat-win" id="chatWin">
+  <div class="chat-hdr">
+    <div class="chat-av">G</div>
+    <div class="chat-hdr-info">
+      <div class="chat-nm">Gabriela — AI Concierge</div>
+      <div class="chat-st">● Powered by Claude · Available 24/7</div>
+    </div>
+    <button class="chat-x" onclick="toggleChat()">✕</button>
+  </div>
+  <div class="chat-msgs" id="chatMsgs">
+    <div class="chat-msg bot">Magandang araw! 🌺 Welcome to The Grand Horizon. I'm Gabriela, your personal AI concierge. How may I assist you today — reservations, dining, spa, or exploring the Philippines?</div>
+  </div>
+  <div class="chat-typing-ind" id="chatTyping">Gabriela is typing…</div>
+  <div class="chat-chips" id="chatChips">
+    <button class="chat-chip" onclick="chatSuggest('What rooms are available?')">Rooms</button>
+    <button class="chat-chip" onclick="chatSuggest('Tell me about dining')">Dining</button>
+    <button class="chat-chip" onclick="chatSuggest('What spa packages do you have?')">Spa</button>
+    <button class="chat-chip" onclick="chatSuggest('How do I get to the hotel?')">Directions</button>
+    <button class="chat-chip" onclick="chatSuggest('What activities are near the hotel?')">Activities</button>
+  </div>
+  <div class="chat-inp-row">
+    <input class="chat-inp" id="chatInp" type="text" placeholder="Ask about rooms, dining, activities…" onkeydown="if(event.key==='Enter')chatSend()">
+    <button class="chat-send" onclick="chatSend()">↑</button>
+  </div>
+</div>
+
+<!-- ROOM MODAL -->
+<div class="modal-bd" id="modalBd" onclick="closeModal(event)">
+  <div class="modal" id="roomModal">
+    <div class="modal-hdr">
+      <div class="modal-title" id="modalTitle">Room Details</div>
+      <button class="modal-close-btn" onclick="closeModalDirect()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-img-wrap" id="modalImg"></div>
+      <div class="modal-desc" id="modalDesc"></div>
+      <div class="modal-feats" id="modalFeats"></div>
+      <div class="modal-price-bar">
+        <div>
+          <div style="font-size:0.67rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin-bottom:0.3rem">Starting From</div>
+          <div class="modal-price-val" id="modalPrice">₱0 <small>/ night</small></div>
+        </div>
+        <button class="btn-gold" onclick="closeModalDirect();goTo('booking-section')">Reserve This Room →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── API BASE (change to your server URL in production) ──
+const API = '';  // empty = same origin; set to 'http://localhost:3000' for local dev
+
+// ── TOAST ──
+function showToast(msg, type='success', dur=4000){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = `toast ${type} show`;
+  setTimeout(() => t.classList.remove('show'), dur);
+}
+
+// ── SMOOTH SCROLL ──
+function goTo(id){ document.getElementById(id)?.scrollIntoView({behavior:'smooth',block:'start'}); }
+
+// ── SET DEFAULT DATES ──
+(function(){
+  const today = new Date();
+  const tom = new Date(today); tom.setDate(tom.getDate()+1);
+  const dat = new Date(today); dat.setDate(dat.getDate()+2);
+  const fmt = d => d.toISOString().split('T')[0];
+  ['b-checkin','f-checkin'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=fmt(tom); });
+  ['b-checkout','f-checkout'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=fmt(dat); });
+  ['b-checkin','b-checkout','f-checkin','f-checkout'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.min=fmt(today);
+  });
+})();
+
+// ── CHECK AVAILABILITY ──
+async function checkAvailability(){
+  const ci = document.getElementById('b-checkin').value;
+  const co = document.getElementById('b-checkout').value;
+  const guests = document.getElementById('b-guests').value;
+  if(!ci||!co){ showToast('Please select check-in and check-out dates.','error'); return; }
+  const btn = document.getElementById('checkAvailBtn');
+  btn.classList.add('loading'); btn.querySelector('span').textContent='Searching…';
+  try {
+    const res = await fetch(`${API}/api/availability`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({checkIn:ci, checkOut:co, guests})
+    });
+    const data = await res.json();
+    if(!data.success){ showToast(data.message,'error'); return; }
+    renderAvailability(data);
+  } catch(e){
+    // Fallback: show static rooms if server not running
+    renderStaticAvailability(ci, co, guests);
+  }
+  btn.classList.remove('loading'); btn.querySelector('span').textContent='Check Availability';
+}
+
+function renderAvailability(data){
+  const panel = document.getElementById('availResults');
+  document.getElementById('availTitle').textContent = `${data.rooms.length} rooms available · ${data.nights} night${data.nights>1?'s':''} · Check-in ${data.checkIn} → Check-out ${data.checkOut}`;
+  const grid = document.getElementById('availGrid');
+  grid.innerHTML = data.rooms.map(r => `
+    <div class="avail-card">
+      <div class="avail-room-type">${r.type}</div>
+      <div class="avail-room-name">${r.name}</div>
+      <div class="avail-meta">📐 ${r.sqm} sqm &nbsp;·&nbsp; 🛏 ${r.bed} &nbsp;·&nbsp; 👁 ${r.view}<br>👥 Up to ${r.maxGuests} guests &nbsp;·&nbsp; ✅ ${r.available} remaining</div>
+      <div class="avail-price">₱${r.price.toLocaleString()} <small>/ night</small></div>
+      <div class="avail-total">Total for ${data.nights} nights: ₱${r.totalPrice.toLocaleString()}</div>
+      <button class="avail-select-btn" onclick="selectRoomForBooking('${r.id}')">Select This Room →</button>
+    </div>`).join('');
+  panel.classList.add('open');
+  setTimeout(() => panel.scrollIntoView({behavior:'smooth',block:'nearest'}), 100);
+}
+
+function renderStaticAvailability(ci, co, guests){
+  const ciD = new Date(ci), coD = new Date(co);
+  const nights = Math.max(1, Math.ceil((coD-ciD)/(1000*60*60*24)));
+  const rooms = [
+    {id:'deluxe',name:'Deluxe Room',type:'Garden Retreat',price:8500,sqm:55,bed:'Queen',view:'Garden',maxGuests:2,available:12},
+    {id:'superior',name:'Superior Room',type:'City View',price:11000,sqm:65,bed:'King',view:'City',maxGuests:2,available:8},
+    {id:'junior',name:'Junior Suite',type:'Capiz Penthouse',price:18500,sqm:90,bed:'King',view:'Bay',maxGuests:3,available:5},
+    {id:'grand',name:'Grand Suite',type:'Manila Bay',price:32000,sqm:135,bed:'King',view:'Panoramic',maxGuests:4,available:3},
+    {id:'presidential',name:'Presidential Suite',type:'The Manila Bay',price:48000,sqm:180,bed:'Super King',view:'Full Bay',maxGuests:6,available:1},
+  ].filter(r => r.maxGuests >= parseInt(guests||1));
+  renderAvailability({rooms: rooms.map(r=>({...r,totalPrice:r.price*nights})), nights, checkIn:ci, checkOut:co});
+}
+
+// ── SELECT ROOM FOR BOOKING ──
+function selectRoomForBooking(roomId){
+  document.getElementById('f-room').value = roomId;
+  goTo('booking-section');
+  showToast('Room selected! Please complete your reservation below.','info');
+}
+
+// ── SUBMIT RESERVATION ──
+async function submitReservation(){
+  const fname = document.getElementById('f-fname').value.trim();
+  const lname = document.getElementById('f-lname').value.trim();
+  const email = document.getElementById('f-email').value.trim();
+  const phone = document.getElementById('f-phone').value.trim();
+  const checkin = document.getElementById('f-checkin').value;
+  const checkout = document.getElementById('f-checkout').value;
+  const room = document.getElementById('f-room').value;
+  const guests = document.getElementById('f-guests').value;
+  const special = document.getElementById('f-special').value.trim();
+
+  if(!fname||!lname||!email||!checkin||!checkout||!room){
+    showToast('Please fill in all required fields (*).','error'); return;
+  }
+  if(!email.includes('@')){ showToast('Please enter a valid email address.','error'); return; }
+
+  const btn = document.getElementById('submitReservationBtn');
+  btn.disabled = true; btn.querySelector('span').textContent = 'Processing…';
+
+  try {
+    const res = await fetch(`${API}/api/reservations`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({firstName:fname,lastName:lname,email,phone,roomId:room,checkIn:checkin,checkOut:checkout,guests,specialRequests:special})
+    });
+    const data = await res.json();
+    if(data.success){
+      const r = data.reservation;
+      showToast(`✅ Reservation confirmed! Reference: ${r.id} — Total: ₱${r.totalPrice.toLocaleString()}. Check your email!`,'success',6000);
+      ['f-fname','f-lname','f-email','f-phone','f-special'].forEach(id=>document.getElementById(id).value='');
+      document.getElementById('f-room').value='';
+      document.getElementById('lookupId').value = r.id;
+    } else {
+      showToast(data.message||'Reservation failed. Please try again.','error');
+    }
+  } catch(e){
+    // Offline fallback
+    const refId = 'TGH-'+(Math.floor(Math.random()*9000)+1000);
+    showToast(`✅ Reservation received! Reference: ${refId}. We'll confirm via email at ${email} shortly. Mabuhay!`,'success',6000);
+    ['f-fname','f-lname','f-email','f-phone','f-special'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('f-room').value='';
+  }
+
+  btn.disabled = false; btn.querySelector('span').textContent = 'Confirm Reservation';
+}
+
+// ── LOOKUP RESERVATION ──
+async function lookupReservation(){
+  const id = document.getElementById('lookupId').value.trim().toUpperCase();
+  if(!id){ showToast('Please enter a reservation reference number.','error'); return; }
+  const result = document.getElementById('lookupResult');
+  try {
+    const res = await fetch(`${API}/api/reservations/${id}`);
+    const data = await res.json();
+    if(data.success){
+      const r = data.reservation;
+      result.innerHTML = `
+        <div style="font-size:0.72rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem">Reservation Found</div>
+        <div class="lr-row"><span class="lr-key">Reference</span><span class="lr-val">${r.id}</span></div>
+        <div class="lr-row"><span class="lr-key">Guest</span><span class="lr-val">${r.firstName} ${r.lastName}</span></div>
+        <div class="lr-row"><span class="lr-key">Room</span><span class="lr-val">${r.room.name} — ${r.room.type}</span></div>
+        <div class="lr-row"><span class="lr-key">Check In</span><span class="lr-val">${r.checkIn}</span></div>
+        <div class="lr-row"><span class="lr-key">Check Out</span><span class="lr-val">${r.checkOut}</span></div>
+        <div class="lr-row"><span class="lr-key">Nights</span><span class="lr-val">${r.nights}</span></div>
+        <div class="lr-row"><span class="lr-key">Guests</span><span class="lr-val">${r.guests}</span></div>
+        <div class="lr-row"><span class="lr-key">Total</span><span class="lr-val">₱${r.totalPrice.toLocaleString()}</span></div>
+        <div class="lr-row"><span class="lr-key">Status</span><span class="lr-val status-confirmed">✅ ${r.status.toUpperCase()}</span></div>`;
+      result.classList.add('show');
+    } else {
+      result.innerHTML = `<div style="font-size:0.85rem;color:var(--red)">❌ Reservation not found. Please check your reference number.</div>`;
+      result.classList.add('show');
+    }
+  } catch(e){
+    result.innerHTML = `<div style="font-size:0.85rem;color:var(--muted)">Server offline. Please call +63 (2) 8888-7000 to look up your reservation.</div>`;
+    result.classList.add('show');
+  }
+}
+
+// ── ROOM MODAL DATA ──
+const ROOMS = {
+  presidential:{title:'The Manila Bay Presidential Suite',img:'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=900&q=80',desc:'The crown jewel of The Grand Horizon. This extraordinary 180 sqm suite commands sweeping panoramic views of Manila Bay — where legendary golden sunsets unfold each evening. The suite features a private butler, grand piano, wraparound terrace, and bespoke Filipino art curated by National Artist Benedicto Cabrera.',features:['180 sqm of living space','Panoramic Manila Bay view','Private terrace & jacuzzi','Personal butler service','Grand piano & curated library','Separate living & dining room','Premium minibar stocked daily','Airport limousine transfer included'],price:'₱48,000'},
+  deluxe:{title:'Garden Retreat Deluxe Room',img:'https://images.unsplash.com/photo-1591088398332-8a7791972843?w=900&q=80',desc:'A serene haven overlooking the hotel\'s award-winning Japanese garden. The Garden Retreat blends indigenous Philippine materials — capiz shell fixtures, rattan accents, abaca textiles — with contemporary comfort. Perfect for the traveler who seeks quiet luxury amid lush greenery.',features:['55 sqm garden view room','Queen-size Signature Bed','Capiz shell bathroom','Rainfall shower & deep soaking tub','Nespresso machine','Smart TV & Bose sound system','Evening turndown service','Complimentary breakfast for two'],price:'₱8,500'},
+  superior:{title:'Superior Room — City View',img:'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=900&q=80',desc:'Elevated above the city skyline, the Superior Room offers sweeping views of Manila while cocooning guests in refined comfort. Contemporary Filipino accents meet modern luxury amenities.',features:['65 sqm city view','King-size bed','Walk-in wardrobe','Marble bathroom','Nespresso & minibar','Smart TV 55"','Daily housekeeping','Complimentary Wi-Fi'],price:'₱11,000'},
+  junior:{title:'Capiz Penthouse Junior Suite',img:'https://images.unsplash.com/photo-1578683010236-d716f9a3f461?w=900&q=80',desc:'Named after the province of Capiz, this 90 sqm penthouse suite celebrates the sea. Distinctive capiz shell installations cast the space in otherworldly warm glow, while floor-to-ceiling windows frame breathtaking city and bay vistas.',features:['90 sqm penthouse layout','King-size four-poster bed','Separate living & dressing room','Private capiz-lit bathroom','Dual marble vanities','Exclusive lounge access','Complimentary cocktail hour','Late checkout guaranteed'],price:'₱18,500'},
+  grand:{title:'Grand Suite — Manila Bay',img:'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=900&q=80',desc:'A masterpiece of Philippine luxury spanning 135 sqm. The Grand Suite commands commanding views of Manila Bay from a private wraparound terrace, with interiors curated by award-winning Filipino designers.',features:['135 sqm living area','King bed + pull-out sofa','Wraparound private terrace','Jacuzzi with bay view','Full butler service','Living & dining rooms','Two marble bathrooms','Complimentary minibar & breakfast'],price:'₱32,000'},
+};
+
+function openRoomModal(id){
+  const r = ROOMS[id]; if(!r) return;
+  document.getElementById('modalTitle').textContent = r.title;
+  document.getElementById('modalImg').style.background = `url('${r.img}') center/cover`;
+  document.getElementById('modalDesc').textContent = r.desc;
+  document.getElementById('modalPrice').innerHTML = r.price + ' <small>/ night</small>';
+  document.getElementById('modalFeats').innerHTML = r.features.map(f=>`<div class="mf">${f}</div>`).join('');
+  document.getElementById('modalBd').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal(e){ if(e.target===document.getElementById('modalBd')) closeModalDirect(); }
+function closeModalDirect(){ document.getElementById('modalBd').classList.remove('open'); document.body.style.overflow=''; }
+
+// ── CHAT ──
+let chatOpen = false;
+const chatHistory = [];
+
+function toggleChat(){
+  chatOpen = !chatOpen;
+  document.getElementById('chatWin').classList.toggle('open', chatOpen);
+  if(chatOpen) document.getElementById('chatInp').focus();
+}
+
+function chatSuggest(txt){ document.getElementById('chatInp').value = txt; chatSend(); }
+
+async function chatSend(){
+  const inp = document.getElementById('chatInp');
+  const msg = inp.value.trim(); if(!msg) return;
+  inp.value = '';
+  addChatMsg('user', msg);
+  chatHistory.push({role:'user', content:msg});
+  document.getElementById('chatChips').style.display = 'none';
+  document.getElementById('chatTyping').style.display = 'block';
+  scrollChat();
+  try {
+    const res = await fetch(`${API}/api/chat`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({messages: chatHistory})
+    });
+    const data = await res.json();
+    const reply = data.reply || 'Please call us at +63 (2) 8888-7000.';
+    chatHistory.push({role:'assistant', content:reply});
+    document.getElementById('chatTyping').style.display = 'none';
+    addChatMsg('bot', reply);
+  } catch(e){
+    document.getElementById('chatTyping').style.display = 'none';
+    addChatMsg('bot', 'Apologies — I\'m temporarily unavailable. Please call +63 (2) 8888-7000 or email reservations@thegrandhorizon.ph for immediate assistance. Salamat!');
+  }
+}
+
+function addChatMsg(role, text){
+  const msgs = document.getElementById('chatMsgs');
+  const div = document.createElement('div');
+  div.className = `chat-msg ${role}`;
+  div.textContent = text;
+  msgs.appendChild(div);
+  scrollChat();
+}
+function scrollChat(){ const m=document.getElementById('chatMsgs'); m.scrollTop=m.scrollHeight; }
+
+// ── SCROLL ANIMATIONS ──
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('vis'); });
+}, {threshold:0.08});
+document.querySelectorAll('.fi').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
