@@ -100,10 +100,11 @@ app.get('/api/admin/reservations', (req, res) => {
 });
 
 // ─── API: Submit inquiry ───
-// ─── API: AI Chat Proxy ───
 app.post('/api/chat', async (req, res) => {
   const { messages } = req.body;
-  if (!messages || !Array.isArray(messages)) return res.status(400).json({ success: false, message: 'Messages array required.' });
+  if (!messages || !Array.isArray(messages)) {
+    return res.status(400).json({ success: false, message: 'Messages array required.' });
+  }
 
   const SYSTEM_PROMPT = `You are Gabriela, the AI concierge for The Grand Horizon — a 5-star luxury hotel in Manila, Philippines. Be warm, elegant, and concise (2-4 sentences). Occasionally use Filipino greetings like "Mabuhay!", "Salamat", "Magandang araw!".
 
@@ -115,31 +116,81 @@ Hotel info:
 - Amenities: 80m infinity pool, Pamana Spa, 7 restaurants, 24hr gym, Japanese garden, private marina, Kids Sanctuary
 - Dining: Bahay Kubo (Filipino fine dining), Langit Bar (rooftop cocktails, 38F)
 - Check-in: 3PM | Check-out: 12PM
-For reservations, direct guests to fill the booking form on the website or call +63 (2) 8888-7000.`;
+
+ONLY direct guests to call +63 (2) 8888-7000 or use the website booking form for reservations, payments, or availability checks. For all other questions about rooms, amenities, dining, directions, or Philippines travel tips, provide helpful information.`;
 
   try {
-const fetch = (await import('node-fetch')).default;
-    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-  method: 'POST',
-  headers: { 
-    'Content-Type': 'application/json', 
-    'Authorization': `Bearer ${process.env.GROQ_API_KEY}` 
-  },
-  body: JSON.stringify({ 
-    model: 'llama3-8b-8192', 
-    max_tokens: 500, 
-    messages: [
-      { role: 'system', content: SYSTEM_PROMPT },
-      ...messages
-    ] 
-  })
-});
-const data = await response.json();
-const reply = data.choices?.[0]?.message?.content || 'Please call us at +63 (2) 8888-7000.';
-    res.json({ success: true, reply });
-  } catch (e) {
-    console.error('CHAT ERROR:', e.message, e);
-    res.json({ success: true, reply: `DEBUG: ${e.message}` });
+    const fetch = (await import('node-fetch')).default;
+    
+    // Try Groq first (faster/cheaper)
+    let response;
+    try {
+      response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json', 
+          'Authorization': `Bearer ${process.env.GROQ_API_KEY}` 
+        },
+        body: JSON.stringify({ 
+          model: 'llama3-8b-8192', 
+          max_tokens: 500,
+          temperature: 0.7,
+          messages: [
+            { role: 'system', content: SYSTEM_PROMPT },
+            ...messages
+          ]
+        })
+      });
+      
+      if (!response.ok) throw new Error(`Groq HTTP ${response.status}`);
+    } catch (groqError) {
+      // Fallback to Anthropic
+      console.log('Groq failed, trying Anthropic:', groqError.message);
+      response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'x-api-key': `Bearer ${process.env.ANTHROPIC_API_KEY}`,
+          'anthropic-version': '2023-06-01'
+        },
+        body: JSON.stringify({
+          model: 'claude-3-haiku-20240307',
+          max_tokens: 500,
+          temperature: 0.7,
+          system: SYSTEM_PROMPT,
+          messages: messages
+        })
+      });
+    }
+
+    if (!response.ok) {
+      throw new Error(`API Error: ${response.status} ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    
+    let reply;
+    if (data.choices) {
+      // Groq/OpenAI format
+      reply = data.choices[0]?.message?.content || 'I apologize, but I need to connect you with our team. Please call +63 (2) 8888-7000.';
+    } else {
+      // Anthropic format
+      reply = data.content?.[0]?.text || 'I apologize, but I need to connect you with our team. Please call +63 (2) 8888-7000.';
+    }
+
+    res.json({ success: true, reply: reply.trim() });
+    
+  } catch (error) {
+    console.error('CHAT ERROR:', error.message);
+    
+    // Better fallback responses based on error type
+    let fallback = "Mabuhay! I'm experiencing technical difficulties. Please call +63 (2) 8888-7000 for immediate assistance. Salamat!";
+    
+    if (error.message.includes('401') || error.message.includes('403')) {
+      fallback = "Our AI concierge is temporarily unavailable. Please use the booking form or call +63 (2) 8888-7000.";
+    }
+    
+    res.json({ success: true, reply: fallback });
   }
 });
 
