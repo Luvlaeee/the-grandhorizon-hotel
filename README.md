@@ -1,6 +1,6 @@
-# 🏨 The Grandeur Hotel — Reservation System
+# 🏨 The Grand Horizon Hotel — Reservation System
 
-A luxury hotel reservation system for The Grandeur, Manila Bay, Philippines.
+A luxury hotel reservation system for The Grand Horizon, Manila Bay, Philippines.
 Built with a Node.js/Express backend and a pure HTML/CSS/JS frontend.
 
 ---

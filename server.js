@@ -1,3 +1,8 @@
+require('dotenv').config();  // ← ADD THIS at the top
+const express = require('express');
+const cors = require('cors');
+// ... rest of your code
+
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
@@ -108,12 +113,12 @@ app.post('/api/chat', async (req, res) => {
   const { messages } = req.body;
   if (!messages || !Array.isArray(messages)) return res.status(400).json({ success: false, message: 'Messages array required.' });
 
-  const SYSTEM_PROMPT = `You are Gabriela, the AI concierge for The Grandeur — a 5-star luxury hotel in Manila, Philippines. Be warm, elegant, and concise (2-4 sentences). Occasionally use Filipino greetings like "Mabuhay!", "Salamat", "Magandang araw!".
+  const SYSTEM_PROMPT = `You are Gabriela, the AI concierge for The Grand Horizon — a 5-star luxury hotel in Manila, Philippines. Be warm, elegant, and concise (2-4 sentences). Occasionally use Filipino greetings like "Mabuhay!", "Salamat", "Magandang araw!".
 
 Hotel info:
 - Address: 1 Roxas Boulevard, Ermita, Manila, Philippines 1000
 - Phone: +63 (2) 8888-7000
-- Email: reservations@thegrandeur.ph
+- Email: reservations@thegrandhorizon.ph
 - Rooms: Deluxe ₱8,500/night, Superior ₱11,000, Junior Suite ₱18,500, Grand Suite ₱32,000, Presidential ₱48,000
 - Amenities: 80m infinity pool, Pamana Spa, 7 restaurants, 24hr gym, Japanese garden, private marina, Kids Sanctuary
 - Dining: Bahay Kubo (Filipino fine dining), Langit Bar (rooftop cocktails, 38F)
@@ -125,13 +130,13 @@ For reservations, direct guests to fill the booking form on the website or call 
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'anthropic-version': '2023-06-01', 'x-api-key': process.env.ANTHROPIC_API_KEY || '' },
-      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 500, system: SYSTEM_PROMPT, messages })
+      body: JSON.stringify({ model: 'claude-sonnet-4-5', max_tokens: 500, system: SYSTEM_PROMPT, messages })
     });
     const data = await response.json();
     const reply = data.content?.[0]?.text || 'Please call us at +63 (2) 8888-7000 for immediate assistance.';
     res.json({ success: true, reply });
   } catch (e) {
-    res.json({ success: true, reply: 'Apologies for the inconvenience. Please contact us directly at +63 (2) 8888-7000 or reservations@thegrandeur.ph — our team is available 24/7.' });
+    res.json({ success: true, reply: 'Apologies for the inconvenience. Please contact us directly at +63 (2) 8888-7000 or reservations@thegrandhorizon.ph — our team is available 24/7.' });
   }
 });
 
@@ -142,5 +147,5 @@ app.get('*', (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`\n🏨 The Grandeur Hotel Server running at http://localhost:${PORT}\n`);
+  console.log(`\n🏨 The Grand Horizon Hotel Server running at http://localhost:${PORT}\n`);
 });
