@@ -1,5 +1,9 @@
 require('dotenv').config();
-console.log('API KEY:', process.env.ANTHROPIC_API_KEY ? 'LOADED ✅' : 'MISSING ❌');  // ← add this
+console.log('ENV CHECK:', {
+  key: process.env.ANTHROPIC_API_KEY ? 'FOUND: ' + process.env.ANTHROPIC_API_KEY.slice(0,10) + '...' : 'MISSING',
+  port: process.env.PORT,
+  node_env: process.env.NODE_ENV
+});
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
@@ -130,6 +134,8 @@ For reservations, direct guests to fill the booking form on the website or call 
       body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: 500, system: SYSTEM_PROMPT, messages })
     });
     const data = await response.json();
+    console.log('Anthropic raw response:', JSON.stringify(data));
+    if (data.error) console.error('Anthropic error:', data.error);
     const reply = data.content?.[0]?.text || 'Please call us at +63 (2) 8888-7000 for immediate assistance.';
     res.json({ success: true, reply });
   } catch (e) {
