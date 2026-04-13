@@ -144,6 +144,7 @@ For reservations, direct guests to fill the booking form on the website or call 
   })
 });
 const data = await response.json();
+console.log('Groq raw response:', JSON.stringify(data, null, 2));
 const reply = data.choices?.[0]?.message?.content || 'Please call us at +63 (2) 8888-7000.';
     res.json({ success: true, reply });
   } catch (e) {
